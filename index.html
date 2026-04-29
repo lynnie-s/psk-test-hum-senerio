@@ -2,18 +2,17 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-  <meta property="og:title" content="☀️ 你是哪種防曬人格？測完還能配色號！">
-  <meta property="og:description" content="🛡️全防守 / 🌬️隨心派 / 🔬成分控 / 🌿護環境 — 13題找出你的夏日防曬靈魂，順便幫你配出命定色號 👀 快來測看看！">
+  <meta property="og:title" content="你是哪種防曬人格？測完還能配色號！">
+  <meta property="og:description" content="13題找出你的夏日防曬靈魂，同時幫你配出最適合的色號">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://lynnie-s.github.io/psk-test-hum-senerio/">
+  <meta property="og:locale" content="zh_TW">
   <meta property="og:image" content="https://lynnie-s.github.io/psk-test-hum-senerio/cover.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="你是哪種防曬人格？測完還能配色號！">
+  <meta name="twitter:description" content="13題找出你的夏日防曬靈魂，同時幫你配出最適合的色號">
   <meta name="twitter:image" content="https://lynnie-s.github.io/psk-test-hum-senerio/cover.png">
-  <meta property="og:locale" content="zh_TW">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="☀️ 你是哪種防曬人格？測完還能配色號！">
-  <meta name="twitter:description" content="🛡️全防守 / 🌬️隨心派 / 🔬成分控 / 🌿護環境 — 13題找出你的夏日防曬靈魂，順便幫你配出命定色號 👀">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>一秒看透你的夏日防曬人格｜PSK 深海美肌專家</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -503,6 +502,7 @@ function calcPersonality(){
 }
 
 function showWhiteResult(){
+  submitToAPI(pWinner, 'white');
   document.getElementById('s-quiz').style.display='none';
   const el=document.getElementById('s-result');
   el.style.display='block';
@@ -557,6 +557,7 @@ function showFinalResult(){
   const r=pResults[pWinner];
   const shadeKeyMap={b:'bright',n:'natural',h:'healthy'};
   const shadeWinner=shadeKeyMap[Object.keys(sScore).reduce((a,b)=>sScore[a]>=sScore[b]?a:b)];
+  submitToAPI(pWinner, shadeWinner);
   const sr=shadeResults[shadeWinner];
   const trHTML=r.traits.map(t=>`<span class="trait">${t}</span>`).join('');
   const swatchHTML=sr.swatches.map(c=>`<div class="shade-swatch" style="background:${c};"></div>`).join('');
@@ -604,9 +605,8 @@ function showFinalResult(){
 
 function shareResult(pName,sName){
   const text=`我剛發現一個超有趣的「一秒測出你的 PSK 防曬人格☀️」我測出來是「${pName}」，推薦色號是「${sName}」！感覺蠻準的ㅋㅋ 而且有點被燒到🤣先傳給你你也可以玩看看👇`;
-  const url='https://lynnie-s.github.io/psk-test-hum-senerio/';
-  if(navigator.share){navigator.share({title:'一秒測出你的 PSK 防曬人格 ☀️',text,url});}
-  else if(navigator.clipboard){navigator.clipboard.writeText(text+'\n'+url).then(()=>alert('已複製，快去分享！'));}
+  if(navigator.share){navigator.share({title:'一秒測出你的 PSK 防曬人格 ☀️',text,url:'https://lynnie-s.github.io/psk-test-hum-senerio/'});}
+  else if(navigator.clipboard){navigator.clipboard.writeText(text+'\nhttps://lynnie-s.github.io/psk-test-hum-senerio/').then(()=>alert('已複製，快去分享！'));}
 }
 
 function retryQuiz(){
@@ -617,6 +617,19 @@ function retryQuiz(){
   document.getElementById('s-intro').style.display='flex';
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+// PSK API 送出填答結果
+const PSK_API = 'https://psk-vercel.vercel.app';
+async function submitToAPI(personality, shade) {
+  try {
+    await fetch(PSK_API + '/api/responses', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({personality, shade, answers: pAnswers})
+    });
+  } catch(e) { /* 靜默失敗 */ }
+}
+
 </script>
 </body>
 </html>
