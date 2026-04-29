@@ -598,9 +598,9 @@ function showFinalResult(){
 }
 
 function shareResult(pName,sName){
-  const text=`我剛發現一個超有趣的「一秒測出你的 PSK 防曬人格☀️」我測出來是「${pName}」，推薦色號是「${sName}」！感覺蠻準的ㅋㅋ 而且有點被燒到🤣先傳給你你也可以玩看看👇https://lynnie-s.github.io/psk-test-hum-senerio/`;
+  const text=`我剛發現一個超有趣的「一秒測出你的 PSK 防曬人格☀️」我測出來是「${pName}」，推薦色號是「${sName}」！感覺蠻準的ㅋㅋ 而且有點被燒到🤣先傳給你你也可以玩看看👇`;
   if(navigator.share){navigator.share({title:'一秒測出你的 PSK 防曬人格 ☀️',text,url:'https://lynnie-s.github.io/psk-test-hum-senerio/'});}
-  else if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>alert('已複製，快去分享！'));}
+  else if(navigator.clipboard){navigator.clipboard.writeText(text+'\nhttps://lynnie-s.github.io/psk-test-hum-senerio/').then(()=>alert('已複製，快去分享！'));}
 }
 
 function retryQuiz(){
